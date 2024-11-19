@@ -1,0 +1,5 @@
+CAN Analysis Report
+==============================
+Total Messages: 3
+Unique CAN IDs: 2
+Average DLC: 6.666666666666667

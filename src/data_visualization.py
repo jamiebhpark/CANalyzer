@@ -35,6 +35,23 @@ def plot_time_series(df):
     plt.show()
 
 
+def plot_anomalies(df):
+    """
+    이상 탐지 결과를 시각화합니다.
+    :param df: 데이터프레임 (Anomaly 컬럼 포함)
+    """
+    normal_data = df[df["Anomaly"] == 1]
+    anomalies = df[df["Anomaly"] == -1]
+
+    plt.scatter(normal_data["Timestamp"], normal_data["DLC"], label="Normal", alpha=0.7)
+    plt.scatter(anomalies["Timestamp"], anomalies["DLC"], label="Anomaly", color="red", alpha=0.7)
+    plt.title("Anomaly Detection Results")
+    plt.xlabel("Timestamp")
+    plt.ylabel("DLC")
+    plt.legend()
+    plt.show()
+
+
 # 테스트 실행
 if __name__ == "__main__":
     from src.data_analysis import calculate_message_frequency

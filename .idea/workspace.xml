@@ -5,26 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f40eb183-b54e-4bd5-8c5b-a0efbd4a7ee9" name="Changes" comment="initial commit">
-      <change afterPath="$PROJECT_DIR$/.idea/CANalyzer.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CAN_analysis_report.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/report.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/sample_can_log.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/report.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/can_parser.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/create_sample_data.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/data_analysis.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/data_visualization.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/generate_report.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/report_generator.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CAN_analysis_report.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/CAN_analysis_report.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/anomaly_detection.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/interactive_dashboard.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CAN_analysis_report.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/CAN_analysis_report.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/report.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/report.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data_visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/report_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/report_generator.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,8 +86,17 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1732001426576</updated>
-      <workItem from="1732001434606" duration="2962000" />
+      <workItem from="1732001434606" duration="9944000" />
     </task>
+    <task id="LOCAL-00001" summary="initial commit">
+      <option name="closed" value="true" />
+      <created>1732006959140</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1732006959141</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

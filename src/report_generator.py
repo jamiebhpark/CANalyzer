@@ -31,6 +31,27 @@ def generate_pdf_report(analysis_results, file_name="report.pdf"):
         print(f"Failed to save PDF report: {e}")
 
 
+def generate_html_report(analysis_results, file_name="report.html"):
+    """
+    분석 결과를 HTML 파일로 저장.
+    :param analysis_results: 분석 결과 (딕셔너리 형태)
+    :param file_name: 저장할 파일 이름
+    """
+    try:
+        with open(file_name, "w", encoding="utf-8") as file:
+            file.write("<html><head><title>CAN Analysis Report</title></head><body>")
+            file.write("<h1>CAN Analysis Report</h1>")
+            file.write("<table border='1' style='border-collapse: collapse;'>")
+            file.write("<tr><th>Metric</th><th>Value</th></tr>")
+            for key, value in analysis_results.items():
+                file.write(f"<tr><td>{key}</td><td>{value}</td></tr>")
+            file.write("</table>")
+            file.write("</body></html>")
+        print(f"HTML report saved as {file_name}")
+    except Exception as e:
+        print(f"Failed to save HTML report: {e}")
+
+
 if __name__ == "__main__":
     # 테스트 데이터
     sample_results = {
@@ -43,3 +64,6 @@ if __name__ == "__main__":
 
     # PDF 보고서 생성
     generate_pdf_report(sample_results)
+
+    # HTML 보고서 생성 테스트
+    generate_html_report(sample_results, file_name="CAN_analysis_report.html")
