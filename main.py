@@ -1,9 +1,11 @@
 import argparse
+
+from src.anomaly_detection import detect_anomalies
 from src.can_parser import parse_can_log
 from src.data_analysis import calculate_message_frequency, calculate_statistics, filter_by_time_range
-from src.data_visualization import plot_message_frequency, plot_time_series, plot_anomalies
-from src.report_generator import generate_pdf_report, generate_report, generate_html_report
-from src.anomaly_detection import detect_anomalies
+from src.data_visualization import plot_message_frequency, plot_time_series, plot_anomalies, \
+    save_plot_message_frequency, save_plot_anomalies
+from src.report_generator import generate_report, generate_html_report, generate_pdf_report_with_graphs
 
 
 def main():
@@ -13,6 +15,8 @@ def main():
     parser.add_argument("--start-time", type=float, help="Start time for filtering", default=0.0)
     parser.add_argument("--end-time", type=float, help="End time for filtering", default=float("inf"))
     parser.add_argument("--report-type", choices=["pdf", "txt", "html"], help="Report type to generate", default="pdf")
+    parser.add_argument("--anomaly-detection", action="store_true", help="Enable anomaly detection")
+
     args = parser.parse_args()
 
     # 1. CAN 로그 데이터 읽기
@@ -41,22 +45,34 @@ def main():
     # 6. 시간 기반 시각화
     plot_time_series(filtered_data)
 
-    # 7. 보고서 생성
-    if args.report_type == "pdf":
-        generate_pdf_report(stats, file_name="CAN_analysis_report.pdf")
-    elif args.report_type == "txt":
-        generate_report(stats, file_name="CAN_analysis_report.txt")
-    elif args.report_type == "html":
-        generate_html_report(stats, file_name="CAN_analysis_report.html")
-    print(f"Report generated as {args.report_type.upper()}")
-
-    # 8. 이상 탐지 실행
+    # 7. 이상 탐지 실행
     detected_data = detect_anomalies(data)
     print("Anomalies Detected:")
     print(detected_data[detected_data["Anomaly"] == -1])  # 이상치 출력
 
-    # 9. 이상 탐지 결과 시각화
+    # 8. 이상 탐지 결과 시각화
     plot_anomalies(detected_data)
+
+    # 9. 그래프 저장
+    save_plot_message_frequency(freq_data, file_name="frequency_plot.png")
+    save_plot_anomalies(detected_data, file_name="anomalies_plot.png")
+
+    # 10. 보고서 생성
+    if args.report_type == "pdf":
+        # 통합 PDF 생성
+        generate_pdf_report_with_graphs(
+            analysis_results=stats,
+            graph_files=["frequency_plot.png", "anomalies_plot.png"],
+            anomalies=detected_data[detected_data["Anomaly"] == -1],
+            file_name="CAN_analysis_report_with_graphs.pdf"
+        )
+        print(f"Report generated as PDF (with graphs): CAN_analysis_report_with_graphs.pdf")
+    elif args.report_type == "txt":
+        generate_report(stats, file_name="CAN_analysis_report.txt")
+        print(f"Report generated as TXT: CAN_analysis_report.txt")
+    elif args.report_type == "html":
+        generate_html_report(stats, file_name="CAN_analysis_report.html")
+        print(f"Report generated as HTML: CAN_analysis_report.html")
 
 
 if __name__ == "__main__":

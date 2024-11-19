@@ -1,31 +1,54 @@
 import os
 import sys
 from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.pdfgen import canvas
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src.generate_report import generate_report
 
 
-def generate_pdf_report(analysis_results, file_name="report.pdf"):
+def generate_pdf_report(analysis_results, graph_files=None, file_name="report.pdf"):
     """
-    분석 결과를 PDF 파일로 저장.
+    분석 결과와 그래프를 포함한 PDF 파일로 저장.
     :param analysis_results: 분석 결과 (딕셔너리 형태)
+    :param graph_files: 포함할 그래프 이미지 파일 리스트
     :param file_name: 저장할 파일 이름
     """
     try:
-        c = canvas.Canvas(file_name, pagesize=letter)
-        c.setFont("Helvetica", 12)
-        c.drawString(100, 750, "CAN Analysis Report")
-        c.drawString(100, 740, "=" * 30)
+        # PDF 설정
+        doc = SimpleDocTemplate(
+            file_name,
+            pagesize=letter,
+            rightMargin=50,
+            leftMargin=50,
+            topMargin=50,
+            bottomMargin=50
+        )
 
-        y_position = 720
+        # 스타일 설정
+        styles = getSampleStyleSheet()
+        story = [Paragraph("CAN Analysis Report", styles['Title']), Spacer(1, 20),
+                 Paragraph("Analysis Results:", styles['Heading2'])]
+
+        # 제목 추가
+
+        # 분석 결과 추가
         for key, value in analysis_results.items():
-            c.drawString(100, y_position, f"{key}: {value}")
-            y_position -= 20
+            story.append(Paragraph(f"{key}: {value}", styles['Normal']))
+        story.append(Spacer(1, 20))
 
-        c.save()
+        # 그래프 추가
+        if graph_files:
+            story.append(Paragraph("Graphs:", styles['Heading2']))
+            for graph_file in graph_files:
+                story.append(Image(graph_file, width=400, height=200))
+                story.append(Spacer(1, 20))
+
+        # PDF 생성
+        doc.build(story)
         print(f"PDF report saved as {file_name}")
     except Exception as e:
         print(f"Failed to save PDF report: {e}")
@@ -50,6 +73,79 @@ def generate_html_report(analysis_results, file_name="report.html"):
         print(f"HTML report saved as {file_name}")
     except Exception as e:
         print(f"Failed to save HTML report: {e}")
+
+
+def generate_pdf_report_with_anomalies(analysis_results, anomalies, file_name="report_with_anomalies.pdf"):
+    """
+    이상 탐지 결과를 포함한 PDF 보고서를 생성합니다.
+    """
+    from reportlab.lib.pagesizes import letter
+    from reportlab.pdfgen import canvas
+
+    try:
+        c = canvas.Canvas(file_name, pagesize=letter)
+        c.setFont("Helvetica", 12)
+        c.drawString(100, 750, "CAN Analysis Report with Anomalies")
+        c.drawString(100, 740, "=" * 30)
+
+        # 분석 결과 추가
+        y_position = 720
+        for key, value in analysis_results.items():
+            c.drawString(100, y_position, f"{key}: {value}")
+            y_position -= 20
+
+        # 이상치 결과 추가
+        c.drawString(100, y_position - 20, "Detected Anomalies:")
+        for index, anomaly in anomalies.iterrows():
+            y_position -= 20
+            c.drawString(100, y_position,
+                         f"Timestamp: {anomaly['Timestamp']}, CAN_ID: {anomaly['CAN_ID']}, DLC: {anomaly['DLC']}")
+
+        c.save()
+        print(f"PDF report with anomalies saved as {file_name}")
+    except Exception as e:
+        print(f"Failed to save PDF report with anomalies: {e}")
+
+
+def generate_pdf_report_with_graphs(analysis_results, graph_files, anomalies, file_name="report_with_graphs.pdf"):
+    """
+    그래프와 이상 탐지 결과를 포함한 PDF 보고서를 생성합니다.
+    :param analysis_results: 분석 결과 딕셔너리
+    :param graph_files: 포함할 그래프 이미지 파일 리스트
+    :param anomalies: 이상 탐지 결과 (DataFrame)
+    :param file_name: PDF 파일 이름
+    """
+    try:
+        c = canvas.Canvas(file_name, pagesize=letter)
+        c.setFont("Helvetica", 12)
+        c.drawString(100, 750, "CAN Analysis Report with Graphs")
+        c.drawString(100, 740, "=" * 50)
+
+        # 분석 결과 추가
+        y_position = 720
+        for key, value in analysis_results.items():
+            c.drawString(100, y_position, f"{key}: {value}")
+            y_position -= 20
+
+        # 그래프 추가
+        for graph_file in graph_files:
+            y_position -= 40
+            c.drawImage(graph_file, 100, y_position, width=400, height=200)
+            y_position -= 220
+
+        # 이상 탐지 결과 추가
+        if not anomalies.empty:
+            c.drawString(100, y_position - 20, "Detected Anomalies:")
+            y_position -= 40
+            for _, row in anomalies.iterrows():
+                c.drawString(100, y_position,
+                             f"Timestamp: {row['Timestamp']}, CAN_ID: {row['CAN_ID']}, DLC: {row['DLC']}")
+                y_position -= 20
+
+        c.save()
+        print(f"PDF report with graphs saved as {file_name}")
+    except Exception as e:
+        print(f"Failed to save PDF report: {e}")
 
 
 if __name__ == "__main__":
