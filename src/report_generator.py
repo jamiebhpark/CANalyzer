@@ -1,24 +1,30 @@
 import os
 import sys
 from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.pdfgen import canvas
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
+from reportlab.lib import colors
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from src.generate_report import generate_report
+from reportlab.platypus import KeepTogether
 
 
-def generate_pdf_report(analysis_results, graph_files=None, file_name="report.pdf"):
+def generate_pdf_report(
+        analysis_results,
+        graph_files=None,
+        anomalies=None,
+        evaluation_report=None,
+        time_interval_stats=None,
+        file_name="report.pdf",
+        report_type="basic"
+):
     """
-    분석 결과와 그래프를 포함한 PDF 파일로 저장.
-    :param analysis_results: 분석 결과 (딕셔너리 형태)
-    :param graph_files: 포함할 그래프 이미지 파일 리스트
-    :param file_name: 저장할 파일 이름
+    통합 PDF 보고서를 생성합니다.
     """
     try:
-        # PDF 설정
+        from reportlab.platypus import PageBreak
+
         doc = SimpleDocTemplate(
             file_name,
             pagesize=letter,
@@ -27,25 +33,59 @@ def generate_pdf_report(analysis_results, graph_files=None, file_name="report.pd
             topMargin=50,
             bottomMargin=50
         )
-
-        # 스타일 설정
         styles = getSampleStyleSheet()
         story = [Paragraph("CAN Analysis Report", styles['Title']), Spacer(1, 20),
                  Paragraph("Analysis Results:", styles['Heading2'])]
 
-        # 제목 추가
-
-        # 분석 결과 추가
+        # 1. Analysis Results
         for key, value in analysis_results.items():
             story.append(Paragraph(f"{key}: {value}", styles['Normal']))
         story.append(Spacer(1, 20))
 
-        # 그래프 추가
-        if graph_files:
-            story.append(Paragraph("Graphs:", styles['Heading2']))
-            for graph_file in graph_files:
-                story.append(Image(graph_file, width=400, height=200))
-                story.append(Spacer(1, 20))
+        # 2. Detected Anomalies
+        if report_type in ["with_anomalies", "with_graphs"] and anomalies is not None:
+            table_data = [["Timestamp", "CAN_ID", "DLC"]] + [
+                [row["Timestamp"], row["CAN_ID"], row["DLC"]] for _, row in anomalies.iterrows()
+            ]
+            table = Table(table_data, colWidths=[150, 150, 150])
+            table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#d3d3d3")),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey)
+            ]))
+            story.append(KeepTogether([Paragraph("Detected Anomalies:", styles['Heading2']), table]))
+            story.append(Spacer(1, 20))
+
+        # 3. Time Interval Statistics
+        if time_interval_stats:
+            story.append(Paragraph("Time Interval Statistics:", styles['Heading2']))
+            for key, value in time_interval_stats.items():
+                story.append(Paragraph(f"{key}: {value:.6f} seconds", styles['Normal']))
+            story.append(Spacer(1, 20))
+
+        # 4. Data Quality Evaluation
+        if evaluation_report:
+            story.append(Paragraph("Data Quality Evaluation:", styles['Heading2']))
+            story.append(Paragraph(evaluation_report.replace("\n", "<br />"), styles['Normal']))
+            story.append(Spacer(1, 20))
+
+        # 5. Graphs
+        if report_type in ["with_graphs", "with_anomalies"] and graph_files:
+            graph_titles = ["Message Frequency by CAN ID", "Anomaly Detection Results", "Message Frequency Over Time",
+                            "Message Time Intervals"]
+            for title, graph_file in zip(graph_titles, graph_files):
+                if os.path.exists(graph_file):
+                    graph_group = KeepTogether([
+                        Paragraph(title, styles['Heading3']),
+                        Image(graph_file, width=400, height=200),
+                        Spacer(1, 20)
+                    ])
+                    story.append(graph_group)
+                else:
+                    story.append(Paragraph(f"Graph file not found: {graph_file}", styles['Normal']))
 
         # PDF 생성
         doc.build(story)
@@ -54,112 +94,68 @@ def generate_pdf_report(analysis_results, graph_files=None, file_name="report.pd
         print(f"Failed to save PDF report: {e}")
 
 
-def generate_html_report(analysis_results, file_name="report.html"):
+def generate_html_report(
+        analysis_results,
+        graph_files=None,
+        evaluation_report=None,
+        time_interval_stats=None,  # 시간 간격 통계 추가
+        anomalies=None,  # 이상 탐지 결과 추가
+        file_name="report.html"
+):
     """
-    분석 결과를 HTML 파일로 저장.
-    :param analysis_results: 분석 결과 (딕셔너리 형태)
-    :param file_name: 저장할 파일 이름
+    HTML 보고서를 생성합니다.
     """
     try:
         with open(file_name, "w", encoding="utf-8") as file:
+            # HTML 시작
             file.write("<html><head><title>CAN Analysis Report</title></head><body>")
             file.write("<h1>CAN Analysis Report</h1>")
-            file.write("<table border='1' style='border-collapse: collapse;'>")
+
+            # 1. Analysis Results
+            file.write("<h2>Analysis Results:</h2>")
+            file.write("<table border='1' style='border-collapse: collapse; width: 50%;'>")
             file.write("<tr><th>Metric</th><th>Value</th></tr>")
             for key, value in analysis_results.items():
                 file.write(f"<tr><td>{key}</td><td>{value}</td></tr>")
             file.write("</table>")
+
+            # 2. Detected Anomalies
+            if anomalies is not None and not anomalies.empty:
+                file.write("<h2>Detected Anomalies:</h2>")
+                file.write("<table border='1' style='border-collapse: collapse; width: 80%;'>")
+                file.write("<tr><th>Timestamp</th><th>CAN_ID</th><th>DLC</th></tr>")
+                for _, row in anomalies.iterrows():
+                    file.write(f"<tr><td>{row['Timestamp']}</td><td>{row['CAN_ID']}</td><td>{row['DLC']}</td></tr>")
+                file.write("</table>")
+
+            # 3. Time Interval Statistics
+            if time_interval_stats:
+                file.write("<h2>Time Interval Statistics:</h2>")
+                file.write("<ul>")
+                for key, value in time_interval_stats.items():
+                    file.write(f"<li>{key}: {value:.6f} seconds</li>")
+                file.write("</ul>")
+
+            # 4. Data Quality Evaluation
+            if evaluation_report:
+                file.write("<h2>Data Quality Evaluation:</h2>")
+                file.write("<pre>")
+                file.write(evaluation_report)
+                file.write("</pre>")
+
+            # 5. Graphs
+            if graph_files:
+                file.write("<h2>Graphs:</h2>")
+                for graph_file in graph_files:
+                    if os.path.exists(graph_file):
+                        file.write(f"<div><img src='{graph_file}' alt='Graph' style='width: 80%;'></div><br>")
+                    else:
+                        file.write(f"<p>Graph file not found: {graph_file}</p>")
+
+            # HTML 종료
             file.write("</body></html>")
+
         print(f"HTML report saved as {file_name}")
     except Exception as e:
         print(f"Failed to save HTML report: {e}")
 
-
-def generate_pdf_report_with_anomalies(analysis_results, anomalies, file_name="report_with_anomalies.pdf"):
-    """
-    이상 탐지 결과를 포함한 PDF 보고서를 생성합니다.
-    """
-    from reportlab.lib.pagesizes import letter
-    from reportlab.pdfgen import canvas
-
-    try:
-        c = canvas.Canvas(file_name, pagesize=letter)
-        c.setFont("Helvetica", 12)
-        c.drawString(100, 750, "CAN Analysis Report with Anomalies")
-        c.drawString(100, 740, "=" * 30)
-
-        # 분석 결과 추가
-        y_position = 720
-        for key, value in analysis_results.items():
-            c.drawString(100, y_position, f"{key}: {value}")
-            y_position -= 20
-
-        # 이상치 결과 추가
-        c.drawString(100, y_position - 20, "Detected Anomalies:")
-        for index, anomaly in anomalies.iterrows():
-            y_position -= 20
-            c.drawString(100, y_position,
-                         f"Timestamp: {anomaly['Timestamp']}, CAN_ID: {anomaly['CAN_ID']}, DLC: {anomaly['DLC']}")
-
-        c.save()
-        print(f"PDF report with anomalies saved as {file_name}")
-    except Exception as e:
-        print(f"Failed to save PDF report with anomalies: {e}")
-
-
-def generate_pdf_report_with_graphs(analysis_results, graph_files, anomalies, file_name="report_with_graphs.pdf"):
-    """
-    그래프와 이상 탐지 결과를 포함한 PDF 보고서를 생성합니다.
-    :param analysis_results: 분석 결과 딕셔너리
-    :param graph_files: 포함할 그래프 이미지 파일 리스트
-    :param anomalies: 이상 탐지 결과 (DataFrame)
-    :param file_name: PDF 파일 이름
-    """
-    try:
-        c = canvas.Canvas(file_name, pagesize=letter)
-        c.setFont("Helvetica", 12)
-        c.drawString(100, 750, "CAN Analysis Report with Graphs")
-        c.drawString(100, 740, "=" * 50)
-
-        # 분석 결과 추가
-        y_position = 720
-        for key, value in analysis_results.items():
-            c.drawString(100, y_position, f"{key}: {value}")
-            y_position -= 20
-
-        # 그래프 추가
-        for graph_file in graph_files:
-            y_position -= 40
-            c.drawImage(graph_file, 100, y_position, width=400, height=200)
-            y_position -= 220
-
-        # 이상 탐지 결과 추가
-        if not anomalies.empty:
-            c.drawString(100, y_position - 20, "Detected Anomalies:")
-            y_position -= 40
-            for _, row in anomalies.iterrows():
-                c.drawString(100, y_position,
-                             f"Timestamp: {row['Timestamp']}, CAN_ID: {row['CAN_ID']}, DLC: {row['DLC']}")
-                y_position -= 20
-
-        c.save()
-        print(f"PDF report with graphs saved as {file_name}")
-    except Exception as e:
-        print(f"Failed to save PDF report: {e}")
-
-
-if __name__ == "__main__":
-    # 테스트 데이터
-    sample_results = {
-        "Total Messages": 100,
-        "Unique CAN IDs": 5,
-        "Average DLC": 7.2
-    }
-    # 텍스트 보고서 생성
-    generate_report(sample_results)
-
-    # PDF 보고서 생성
-    generate_pdf_report(sample_results)
-
-    # HTML 보고서 생성 테스트
-    generate_html_report(sample_results, file_name="CAN_analysis_report.html")

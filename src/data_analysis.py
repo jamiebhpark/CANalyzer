@@ -44,6 +44,52 @@ def filter_by_time_range(df, start_time, end_time):
     return df[(df["Timestamp"] >= start_time) & (df["Timestamp"] <= end_time)]
 
 
+def evaluate_data_quality(data):
+    """
+    CAN 데이터의 품질 평가.
+    :param data: CAN 로그 데이터프레임
+    :return: 품질 평가 결과 문자열
+    """
+    try:
+        # 평가 기준
+        total_messages = len(data)
+        unique_ids = len(data["CAN_ID"].unique())
+        short_intervals = data["Timestamp"].diff().dropna().lt(0.01).sum()  # 0.01초 이하의 간격
+        out_of_range_dlc = data["DLC"].gt(8).sum()  # DLC > 8
+
+        # 결과 계산
+        report = [f"Total Messages: {total_messages}", f"Unique CAN IDs: {unique_ids}",
+                  f"Messages with short intervals (<0.01s): {short_intervals}",
+                  f"Messages with out-of-range DLC (>8): {out_of_range_dlc}"]
+
+        # 판단
+        if short_intervals / total_messages > 0.1:
+            report.append("Warning: High frequency of short intervals.")
+        if out_of_range_dlc > 0:
+            report.append("Warning: Out-of-range DLC values detected.")
+
+        return "\n".join(report)
+
+    except Exception as e:
+        return f"Failed to evaluate data quality: {e}"
+
+
+def calculate_time_interval_statistics(data):
+    """
+    메시지 간 시간 간격의 통계 계산.
+    :param data: CAN 로그 데이터프레임
+    :return: 시간 간격 통계 (딕셔너리)
+    """
+    intervals = data["Timestamp"].diff().dropna()
+    stats = {
+        "Min Interval": intervals.min(),
+        "Max Interval": intervals.max(),
+        "Mean Interval": intervals.mean(),
+        "Std Interval": intervals.std()
+    }
+    return stats
+
+
 # 테스트 실행
 if __name__ == "__main__":
     import pandas as pd
