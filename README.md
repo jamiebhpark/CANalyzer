@@ -104,7 +104,7 @@ CANalyzer/
 
 ### **PDF 보고서**
 - 분석 결과, 이상 탐지, 시간 간격 통계, 그래프 포함.
-- 샘플 보고서: [CAN_analysis_report.pdf](sample_report.pdf)
+- 샘플 보고서: 상단의 CAN_analysis_report.pdf 참고.
 
 ### **HTML 보고서**
 - 상호작용 가능한 테이블과 그래프 포함.
