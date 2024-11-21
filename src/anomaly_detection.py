@@ -1,26 +1,34 @@
 import os
 import sys
 
+
 # 현재 파일의 상위 디렉토리를 sys.path에 추가
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+
+import pandas as pd
 from sklearn.ensemble import IsolationForest
 
 
-def detect_anomalies(df, contamination=0.05):
+def detect_anomalies(data, contamination=0.05):
     """
     Isolation Forest를 사용해 이상치를 탐지합니다.
-    :param df: 데이터프레임 (CAN 로그 데이터)
-    :param contamination: 이상치 비율 (0.05는 5%)
+    :param data: 데이터프레임 또는 단일 데이터
+    :param contamination: 이상치 비율
     :return: 이상치가 추가된 데이터프레임
     """
-    # CAN 데이터에서 분석에 사용할 특징 선택
-    features = df[["Timestamp", "DLC"]]  # 예: Timestamp와 DLC를 사용
-    model = IsolationForest(contamination=contamination, random_state=42)
-    df["Anomaly"] = model.fit_predict(features)
+    # Ensure data is a DataFrame
+    if isinstance(data, dict):  # 단일 행 처리
+        data = pd.DataFrame([data])
+    elif isinstance(data, list):  # 리스트 처리
+        data = pd.DataFrame(data)
 
-    # Anomaly 값이 -1인 경우 이상치
-    return df
+    # CAN 데이터에서 분석에 사용할 특징 선택
+    features = data[["Timestamp", "DLC"]]
+    model = IsolationForest(contamination=contamination, random_state=42)
+    data["Anomaly"] = model.fit_predict(features)
+
+    return data
 
 
 if __name__ == "__main__":

@@ -90,6 +90,32 @@ def calculate_time_interval_statistics(data):
     return stats
 
 
+def generate_diagnostics(data):
+    """
+    Generate diagnostic insights from CAN data.
+    :param data: DataFrame of CAN log data.
+    :return: Diagnostic results as a list of strings.
+    """
+    diagnostics = []
+
+    # 1. 빈도 분석
+    freq = data["CAN_ID"].value_counts()
+    for can_id, count in freq.items():
+        if count > 3:  # 임계값 설정
+            diagnostics.append(f"CAN ID {can_id} appears {count} times, which is unusually high.")
+
+    # 2. DLC 값 이상 탐지
+    if (data["DLC"] < 2).any():
+        diagnostics.append("Some DLC values are below 2, which might indicate data corruption.")
+
+    # 3. 시간 간격 이상
+    time_intervals = data["Timestamp"].diff().dropna()
+    if time_intervals.max() > 0.2:  # 임계값 설정
+        diagnostics.append("Large time gaps detected between messages, which could indicate a communication issue.")
+
+    return diagnostics
+
+
 # 테스트 실행
 if __name__ == "__main__":
     import pandas as pd

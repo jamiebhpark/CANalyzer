@@ -1,11 +1,22 @@
 import argparse
-
 from src.anomaly_detection import detect_anomalies
 from src.can_parser import parse_can_log
-from src.data_analysis import calculate_message_frequency, calculate_statistics, filter_by_time_range, \
-    evaluate_data_quality, calculate_time_interval_statistics  # 시간 간격 통계 추가
-from src.data_visualization import plot_message_frequency, plot_time_series, plot_anomalies, \
-    save_plot_message_frequency, save_plot_anomalies, plot_time_intervals  # 시간 간격 시각화 추가
+from src.data_analysis import (
+    calculate_message_frequency,
+    calculate_statistics,
+    filter_by_time_range,
+    evaluate_data_quality,
+    calculate_time_interval_statistics,
+    generate_diagnostics  # 진단 함수 추가
+)
+from src.data_visualization import (
+    plot_message_frequency,
+    plot_time_series,
+    plot_anomalies,
+    save_plot_message_frequency,
+    save_plot_anomalies,
+    plot_time_intervals
+)
 from src.report_generator import generate_html_report, generate_pdf_report
 
 
@@ -30,49 +41,50 @@ def main():
     stats = calculate_statistics(data)
     freq_data = calculate_message_frequency(data)
 
-    # 데이터 품질 평가
+    # 3. 데이터 품질 평가
     evaluation_report = evaluate_data_quality(data)
     print("Data Quality Evaluation:")
     print(evaluation_report)
 
-    # 3. 시간 간격 통계 계산
+    # 4. 시간 간격 통계 계산
     time_interval_stats = calculate_time_interval_statistics(data)
     print("Time Interval Statistics:")
     for key, value in time_interval_stats.items():
         print(f"{key}: {value:.6f} seconds")
 
-    # 4. 분석 결과 출력
-    print("Analysis Results:")
-    for key, value in stats.items():
-        print(f"{key}: {value}")
+    # 5. 진단 결과 생성
+    diagnostics = generate_diagnostics(data)
+    print("Diagnostics Summary:")
+    for diagnostic in diagnostics:
+        print(f"- {diagnostic}")
 
-    # 5. 데이터 시각화 (전체 데이터 기준)
+    # 6. 데이터 시각화 (전체 데이터 기준)
     plot_message_frequency(freq_data)
 
-    # 6. 시간 기반 데이터 필터링
+    # 7. 시간 기반 데이터 필터링
     filtered_data = filter_by_time_range(data, args.start_time, args.end_time)
     print(f"Filtered Data from {args.start_time} to {args.end_time}:")
     print(filtered_data)
 
-    # 7. 시간 기반 시각화
+    # 8. 시간 기반 시각화
     plot_time_series(filtered_data, file_name="message_frequency_over_time.png")
 
-    # 8. 시간 간격 시각화 저장
+    # 9. 시간 간격 시각화 저장
     plot_time_intervals(data, file_name="time_interval_plot.png")
 
-    # 9. 이상 탐지 실행
+    # 10. 이상 탐지 실행
     detected_data = detect_anomalies(data)
     print("Anomalies Detected:")
     print(detected_data[detected_data["Anomaly"] == -1])  # 이상치 출력
 
-    # 10. 이상 탐지 결과 시각화
+    # 11. 이상 탐지 결과 시각화
     plot_anomalies(detected_data)
 
-    # 11. 그래프 저장
+    # 12. 그래프 저장
     save_plot_message_frequency(freq_data, file_name="frequency_plot.png")
     save_plot_anomalies(detected_data, file_name="anomalies_plot.png")
 
-    # 12. 보고서 생성
+    # 13. 보고서 생성
     if args.report_type == "pdf":
         # PDF 생성
         generate_pdf_report(
@@ -81,11 +93,12 @@ def main():
                 "frequency_plot.png",
                 "anomalies_plot.png",
                 "message_frequency_over_time.png",
-                "time_interval_plot.png"  # 시간 간격 그래프 추가
+                "time_interval_plot.png"
             ],
             anomalies=detected_data[detected_data["Anomaly"] == -1],
             evaluation_report=evaluation_report,
-            time_interval_stats=time_interval_stats,  # 시간 간격 통계 추가
+            time_interval_stats=time_interval_stats,
+            diagnostics=diagnostics,  # 진단 결과 추가
             file_name="CAN_analysis_report.pdf",
             report_type="with_graphs"
         )
@@ -98,11 +111,12 @@ def main():
                 "frequency_plot.png",
                 "anomalies_plot.png",
                 "message_frequency_over_time.png",
-                "time_interval_plot.png"  # 시간 간격 그래프 추가
+                "time_interval_plot.png"
             ],
             evaluation_report=evaluation_report,
-            time_interval_stats=time_interval_stats,  # 시간 간격 통계 추가
-            anomalies=detected_data[detected_data["Anomaly"] == -1],  # 이상 탐지 결과 추가
+            time_interval_stats=time_interval_stats,
+            anomalies=detected_data[detected_data["Anomaly"] == -1],
+            diagnostics=diagnostics,  # 진단 결과 추가
             file_name="CAN_analysis_report.html"
         )
         print(f"Report generated as HTML: CAN_analysis_report.html")

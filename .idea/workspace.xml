@@ -4,14 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f40eb183-b54e-4bd5-8c5b-a0efbd4a7ee9" name="Changes" comment="Report_Logic_Modifying">
-      <change afterPath="$PROJECT_DIR$/src/real_time_streaming.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/time_interval_plot.png" afterDir="false" />
+    <list default="true" id="f40eb183-b54e-4bd5-8c5b-a0efbd4a7ee9" name="Changes" comment="streaming_logic">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/sample_can_log.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/sample_can_log.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/anomaly_detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/anomaly_detection.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/data_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data_visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/real_time_streaming.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/real_time_streaming.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/report_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/report_generator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/time_interval_plot.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,21 +52,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Python.real_time_streaming.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -83,7 +85,8 @@
       <option name="presentableId" value="Default" />
       <updated>1732001426576</updated>
       <workItem from="1732001434606" duration="15391000" />
-      <workItem from="1732064554443" duration="9075000" />
+      <workItem from="1732064554443" duration="9206000" />
+      <workItem from="1732091191748" duration="5721000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -109,7 +112,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732024906318</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="streaming_logic">
+      <option name="closed" value="true" />
+      <created>1732091122303</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1732091122303</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -120,6 +131,10 @@
     <MESSAGE value="initial commit" />
     <MESSAGE value="Commit_2" />
     <MESSAGE value="Report_Logic_Modifying" />
-    <option name="LAST_COMMIT_MESSAGE" value="Report_Logic_Modifying" />
+    <MESSAGE value="streaming_logic" />
+    <option name="LAST_COMMIT_MESSAGE" value="streaming_logic" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/CANalyzer$real_time_streaming.coverage" NAME="real_time_streaming Coverage Results" MODIFIED="1732091232244" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
 </project>

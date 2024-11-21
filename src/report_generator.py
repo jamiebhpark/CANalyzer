@@ -16,6 +16,7 @@ def generate_pdf_report(
         anomalies=None,
         evaluation_report=None,
         time_interval_stats=None,
+        diagnostics=None,  # Diagnostics 추가
         file_name="report.pdf",
         report_type="basic"
 ):
@@ -34,15 +35,22 @@ def generate_pdf_report(
             bottomMargin=50
         )
         styles = getSampleStyleSheet()
-        story = [Paragraph("CAN Analysis Report", styles['Title']), Spacer(1, 20),
-                 Paragraph("Analysis Results:", styles['Heading2'])]
+        story = [Paragraph("CAN Analysis Report", styles['Title']), Spacer(1, 20)]
 
-        # 1. Analysis Results
+        # 1. Diagnostics Summary
+        if diagnostics:
+            story.append(Paragraph("Diagnostics Summary:", styles['Heading2']))
+            for diagnostic in diagnostics:
+                story.append(Paragraph(f"- {diagnostic}", styles['Normal']))
+            story.append(Spacer(1, 20))
+
+        # 2. Analysis Results
+        story.append(Paragraph("Analysis Results:", styles['Heading2']))
         for key, value in analysis_results.items():
             story.append(Paragraph(f"{key}: {value}", styles['Normal']))
         story.append(Spacer(1, 20))
 
-        # 2. Detected Anomalies
+        # 3. Detected Anomalies
         if report_type in ["with_anomalies", "with_graphs"] and anomalies is not None:
             table_data = [["Timestamp", "CAN_ID", "DLC"]] + [
                 [row["Timestamp"], row["CAN_ID"], row["DLC"]] for _, row in anomalies.iterrows()
@@ -59,20 +67,20 @@ def generate_pdf_report(
             story.append(KeepTogether([Paragraph("Detected Anomalies:", styles['Heading2']), table]))
             story.append(Spacer(1, 20))
 
-        # 3. Time Interval Statistics
+        # 4. Time Interval Statistics
         if time_interval_stats:
             story.append(Paragraph("Time Interval Statistics:", styles['Heading2']))
             for key, value in time_interval_stats.items():
                 story.append(Paragraph(f"{key}: {value:.6f} seconds", styles['Normal']))
             story.append(Spacer(1, 20))
 
-        # 4. Data Quality Evaluation
+        # 5. Data Quality Evaluation
         if evaluation_report:
             story.append(Paragraph("Data Quality Evaluation:", styles['Heading2']))
             story.append(Paragraph(evaluation_report.replace("\n", "<br />"), styles['Normal']))
             story.append(Spacer(1, 20))
 
-        # 5. Graphs
+        # 6. Graphs
         if report_type in ["with_graphs", "with_anomalies"] and graph_files:
             graph_titles = ["Message Frequency by CAN ID", "Anomaly Detection Results", "Message Frequency Over Time",
                             "Message Time Intervals"]
@@ -100,6 +108,7 @@ def generate_html_report(
         evaluation_report=None,
         time_interval_stats=None,  # 시간 간격 통계 추가
         anomalies=None,  # 이상 탐지 결과 추가
+        diagnostics=None,  # Diagnostics 추가
         file_name="report.html"
 ):
     """
@@ -111,7 +120,15 @@ def generate_html_report(
             file.write("<html><head><title>CAN Analysis Report</title></head><body>")
             file.write("<h1>CAN Analysis Report</h1>")
 
-            # 1. Analysis Results
+            # 1. Diagnostics Summary
+            if diagnostics:
+                file.write("<h2>Diagnostics Summary:</h2>")
+                file.write("<ul>")
+                for diagnostic in diagnostics:
+                    file.write(f"<li>{diagnostic}</li>")
+                file.write("</ul>")
+
+            # 2. Analysis Results
             file.write("<h2>Analysis Results:</h2>")
             file.write("<table border='1' style='border-collapse: collapse; width: 50%;'>")
             file.write("<tr><th>Metric</th><th>Value</th></tr>")
@@ -119,7 +136,7 @@ def generate_html_report(
                 file.write(f"<tr><td>{key}</td><td>{value}</td></tr>")
             file.write("</table>")
 
-            # 2. Detected Anomalies
+            # 3. Detected Anomalies
             if anomalies is not None and not anomalies.empty:
                 file.write("<h2>Detected Anomalies:</h2>")
                 file.write("<table border='1' style='border-collapse: collapse; width: 80%;'>")
@@ -128,7 +145,7 @@ def generate_html_report(
                     file.write(f"<tr><td>{row['Timestamp']}</td><td>{row['CAN_ID']}</td><td>{row['DLC']}</td></tr>")
                 file.write("</table>")
 
-            # 3. Time Interval Statistics
+            # 4. Time Interval Statistics
             if time_interval_stats:
                 file.write("<h2>Time Interval Statistics:</h2>")
                 file.write("<ul>")
@@ -136,14 +153,14 @@ def generate_html_report(
                     file.write(f"<li>{key}: {value:.6f} seconds</li>")
                 file.write("</ul>")
 
-            # 4. Data Quality Evaluation
+            # 5. Data Quality Evaluation
             if evaluation_report:
                 file.write("<h2>Data Quality Evaluation:</h2>")
                 file.write("<pre>")
                 file.write(evaluation_report)
                 file.write("</pre>")
 
-            # 5. Graphs
+            # 6. Graphs
             if graph_files:
                 file.write("<h2>Graphs:</h2>")
                 for graph_file in graph_files:
