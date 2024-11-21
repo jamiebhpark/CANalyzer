@@ -1,132 +1,154 @@
+### **`README.md`**
+
 ```markdown
-# CANalyzer
+# CANalyzer: CAN 데이터 분석 도구
 
-## 프로젝트 설명
-CANalyzer는 차량의 CAN 데이터를 분석하고 시각화하는 Python 기반 도구입니다.  
-분석 결과를 PDF 보고서로 생성하여 저장할 수 있습니다.
-
-## 주요 기능
-1. CAN 로그 데이터 파싱
-2. CAN 데이터 필터링 및 통계 분석
-3. 데이터 시각화 (CAN 메시지 빈도)
-4. PDF 보고서 생성
+**CANalyzer**는 CAN (Controller Area Network) 로그 데이터를 분석, 시각화, 보고할 수 있는 통합 도구입니다. 자동차 산업에서 활용할 수 있는 진단 및 분석 기술을 시뮬레이션하며, 실무에 적합한 기능을 갖춘 프로젝트입니다.
 
 ---
 
-## 실행 방법
+## **기능**
 
-### 1. 필수 라이브러리 설치
-아래 명령어를 실행하여 프로젝트에 필요한 라이브러리를 설치하세요:
-```bash
-pip install -r requirements.txt
-```
+1. **CAN 데이터 분석**:
+   - 총 메시지 수, 고유 CAN ID 수, 평균 DLC 등 주요 통계 계산.
+   - 데이터 품질 평가를 통해 짧은 시간 간격 또는 잘못된 DLC 값 경고.
 
-### 2. 샘플 데이터 생성
-샘플 데이터를 생성하려면 아래 명령어를 실행하세요:
-```bash
-python src/create_sample_data.py
-```
+2. **데이터 시각화**:
+   - CAN ID별 메시지 빈도 막대 그래프.
+   - 시간 기반 메시지 빈도와 이상 탐지 결과 시각화.
+   - 메시지 간 시간 간격 통계 및 시각화.
 
-### 3. 프로그램 실행
-메인 프로그램을 실행하여 CAN 데이터를 분석하고 보고서를 생성하세요:
-```bash
-python main.py
-```
+3. **진단 및 이상 탐지**:
+   - Isolation Forest 기반 이상 탐지.
+   - 데이터 품질 및 진단 결과 요약 제공.
+
+4. **보고서 자동화**:
+   - **PDF** 및 **HTML** 형식으로 보고서 생성:
+     - 분석 결과, 진단 요약, 이상 탐지 결과, 그래프 포함.
+
+5. **실시간 스트리밍 시뮬레이션**:
+   - CAN 데이터 실시간 스트리밍 시뮬레이션.
+   - 실시간 이상 탐지 및 경고 시스템.
+
+6. **사용자 친화적 명령줄 인터페이스 (CLI)**:
+   - 데이터 파일 및 보고서 형식을 명령줄에서 지정 가능.
 
 ---
 
-## 프로젝트 구조
+## **설치 방법**
+
+1. 레포지토리 클론:
+   ```bash
+   git clone https://github.com/yourusername/CANalyzer.git
+   cd CANalyzer
+   ```
+
+2. 필요한 패키지 설치:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. 설치 확인:
+   ```bash
+   python main.py --help
+   ```
+
+---
+
+## **사용법**
+
+### **1. 데이터 분석 및 보고서 생성**
+CAN 로그 데이터를 분석하고 보고서를 생성하려면:
+```bash
+python main.py --file data/sample_can_log.csv --report-type pdf
 ```
+
+### **2. 실시간 스트리밍 시뮬레이션**
+실시간 데이터 스트리밍과 이상 탐지를 시뮬레이션하려면:
+```bash
+python src/real_time_streaming.py
+```
+
+### **3. 보고서 형식**
+- `--report-type pdf`: PDF 보고서 생성.
+- `--report-type html`: HTML 보고서 생성.
+
+---
+
+## **프로젝트 구조**
+
+```plaintext
 CANalyzer/
 │
-├── data/                    # CAN 데이터 저장
-│   └── sample_can_log.csv   # 샘플 CAN 로그 데이터
+├── data/                              # 샘플 데이터 파일
+│   └── sample_can_log.csv
 │
-├── src/                     # 소스 코드
-│   ├── __init__.py          # Python 패키지 초기화 파일
-│   ├── can_parser.py        # CAN 데이터 파싱 모듈
-│   ├── data_analysis.py     # CAN 데이터 분석 모듈
-│   ├── data_visualization.py # 데이터 시각화 모듈
-│   ├── report_generator.py  # 보고서 생성 모듈
-│   └── create_sample_data.py # 샘플 데이터 생성 모듈
+├── src/                               # 소스 코드
+│   ├── anomaly_detection.py           # 이상 탐지 로직
+│   ├── can_parser.py                  # CAN 로그 파일 파싱
+│   ├── data_analysis.py               # 데이터 분석 함수
+│   ├── data_visualization.py          # 데이터 시각화 함수
+│   ├── report_generator.py            # PDF 및 HTML 보고서 생성
+│   ├── real_time_streaming.py         # 실시간 스트리밍 시뮬레이션
+│   └── __init__.py
 │
-├── main.py                  # 메인 실행 파일
-├── requirements.txt         # 필요한 라이브러리 목록
-└── README.md                # 프로젝트 설명서
+├── main.py                            # 분석 및 보고서 생성 엔트리 포인트
+├── README.md                          # 프로젝트 설명
+├── requirements.txt                   # 의존성 파일
+└── .venv/                             # Python 가상 환경 (선택 사항)
 ```
 
 ---
 
-## 요구사항
-- Python 3.8 이상
-- 주요 라이브러리:
-  - pandas
-  - matplotlib
-  - reportlab
-  - python-can
+## **샘플 출력**
+
+### **PDF 보고서**
+- 분석 결과, 이상 탐지, 시간 간격 통계, 그래프 포함.
+- 샘플 보고서: [CAN_analysis_report.pdf](sample_report.pdf)
+
+### **HTML 보고서**
+- 상호작용 가능한 테이블과 그래프 포함.
 
 ---
 
-## 주요 모듈 설명
+## **사용된 기술**
 
-### 1. `can_parser.py`
-- **기능**: CAN 로그 데이터를 CSV 파일에서 읽어 Python 데이터프레임으로 변환합니다.
-- **사용법**:
-  ```python
-  from src.can_parser import parse_can_log
-
-  file_path = "data/sample_can_log.csv"
-  data = parse_can_log(file_path)
-  print(data.head())
-  ```
-
-### 2. `data_analysis.py`
-- **기능**: CAN 데이터 필터링 및 통계 분석.
-- **주요 함수**:
-  - `filter_by_can_id`: 특정 CAN ID에 해당하는 데이터를 필터링합니다.
-  - `calculate_message_frequency`: 각 CAN ID의 메시지 발생 빈도를 계산합니다.
-  - `calculate_statistics`: 총 메시지 수, 고유 CAN ID 수, DLC 평균을 계산합니다.
-
-### 3. `data_visualization.py`
-- **기능**: 데이터를 시각화하여 그래프를 생성합니다.
-- **주요 함수**:
-  - `plot_message_frequency`: CAN ID의 발생 빈도를 막대 그래프로 시각화합니다.
-
-### 4. `report_generator.py`
-- **기능**: 분석 결과를 보고서로 저장합니다.
-- **주요 함수**:
-  - `generate_report`: 텍스트 파일 보고서를 생성합니다.
-  - `generate_pdf_report`: PDF 파일 보고서를 생성합니다.
-
-### 5. `create_sample_data.py`
-- **기능**: 샘플 CAN 데이터를 생성하여 `data/sample_can_log.csv` 파일로 저장합니다.
+- **Python**: 주요 프로그래밍 언어.
+- **Pandas**: 데이터 조작 및 분석.
+- **Matplotlib**: 데이터 시각화.
+- **ReportLab**: PDF 생성.
+- **sklearn**: 머신러닝 기반 이상 탐지.
 
 ---
 
-## 실행 예시
+## **향후 개선점**
 
-1. 샘플 데이터 생성:
-   ```bash
-   python src/create_sample_data.py
-   ```
-
-2. 메인 프로그램 실행:
-   ```bash
-   python main.py
-   ```
-
-3. 결과:
-   - **PDF 보고서**: `CAN_analysis_report.pdf`가 프로젝트 폴더에 생성됩니다.
-   - **시각화**: 메시지 빈도 그래프가 화면에 표시됩니다.
+1. **고급 시각화**:
+   - 히트맵과 상관 관계 그래프 추가.
+2. **실시간 경고 시스템 강화**:
+   - 이메일 또는 슬랙 알림 기능 추가.
+3. **대규모 데이터 처리 지원**:
+   - Spark 또는 Dask와의 통합으로 대규모 데이터 처리 성능 강화.
 
 ---
 
-## 기여 방법
-1. 프로젝트를 포크합니다.
-2. 새로운 기능을 추가하거나 버그를 수정합니다.
-3. Pull Request를 제출합니다.
+## **기여 방법**
+
+기여를 환영합니다! 다음 단계를 따라주세요:
+1. 레포지토리를 포크하세요.
+2. 새 브랜치 생성 (`feature/your-feature`).
+3. 변경 사항 커밋.
+4. 풀 리퀘스트 제출.
 
 ---
 
-## 라이선스
-이 프로젝트는 [MIT License](LICENSE)에 따라 배포됩니다.
+## **문의**
+
+질문이나 제안이 있다면 언제든 연락 주세요:
+
+- 이름: 박종훈
+- 이메일: jamiebhpark@gmail.com
+
+---
+
+**CANalyzer**: 자동차 산업을 위한 데이터 기반 진단의 미래를 만들어 갑니다.

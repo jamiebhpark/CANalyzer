@@ -4,15 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f40eb183-b54e-4bd5-8c5b-a0efbd4a7ee9" name="Changes" comment="streaming_logic">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/sample_can_log.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/sample_can_log.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/anomaly_detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/anomaly_detection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/real_time_streaming.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/real_time_streaming.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/report_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/report_generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/time_interval_plot.png" beforeDir="false" />
+    <list default="true" id="f40eb183-b54e-4bd5-8c5b-a0efbd4a7ee9" name="Changes" comment="Complete_App_For_Hyundai_Portfolio">
+      <change afterPath="$PROJECT_DIR$/CAN_analysis_report.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CAN_analysis_report.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/anomalies_plot.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frequency_plot.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/message_frequency_over_time.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/time_interval_plot.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,7 +84,7 @@
       <updated>1732001426576</updated>
       <workItem from="1732001434606" duration="15391000" />
       <workItem from="1732064554443" duration="9206000" />
-      <workItem from="1732091191748" duration="5721000" />
+      <workItem from="1732091191748" duration="5983000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -120,7 +118,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732091122303</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Complete_App_For_Hyundai_Portfolio">
+      <option name="closed" value="true" />
+      <created>1732181442903</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1732181442903</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -132,7 +138,8 @@
     <MESSAGE value="Commit_2" />
     <MESSAGE value="Report_Logic_Modifying" />
     <MESSAGE value="streaming_logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="streaming_logic" />
+    <MESSAGE value="Complete_App_For_Hyundai_Portfolio" />
+    <option name="LAST_COMMIT_MESSAGE" value="Complete_App_For_Hyundai_Portfolio" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CANalyzer$real_time_streaming.coverage" NAME="real_time_streaming Coverage Results" MODIFIED="1732091232244" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
